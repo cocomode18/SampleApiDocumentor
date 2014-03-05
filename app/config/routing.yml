@@ -1,3 +1,27 @@
 cocomode_sample_api_documentor:
     resource: "@CocomodeSampleApiDocumentorBundle/Resources/config/routing.yml"
     prefix:   /
+
+index:
+    path:   /
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:index }
+
+create:
+    path:   /create
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:create }
+
+edit:
+    path:   /edit/{apiId}
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:edit }
+
+delete:
+    path:   /delete/{apiId}
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:delete }
+
+detail:
+    path:   /detail/{route1}/{route2}/{route3}/{route4}/{route5}/{route6}
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:detail }
+
+api:
+    path:   /api/{route1}/{route2}/{route3}/{route4}/{route5}/{route6}
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:api }
