@@ -8,7 +8,6 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
-        //return $this->render('CocomodeSampleApiDocumentorBundle:Default:index.html.twig', array('name' => $name));
         return $this->render('CocomodeSampleApiDocumentorBundle:Default:index.html.twig', array(
             'activeNav' => 'home',
         ));
