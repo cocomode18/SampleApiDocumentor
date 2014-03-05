@@ -1,0 +1,3 @@
+cocomode_sample_api_documentor:
+    resource: "@CocomodeSampleApiDocumentorBundle/Resources/config/routing.yml"
+    prefix:   /

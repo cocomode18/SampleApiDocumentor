@@ -1,0 +1,7 @@
+parameters:
+#    cocomode_sample_api_documentor.example.class: Cocomode\SampleApiDocumentorBundle\Example
+
+services:
+#    cocomode_sample_api_documentor.example:
+#        class: %cocomode_sample_api_documentor.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
