@@ -75,12 +75,77 @@ class DefaultController extends Controller
             $em->persist($api);
             $em->flush();
 
-            $session->getFlashBag()->add('alert-success', 'New Api has been created :)');
+            $session->getFlashBag()->add('alert-success', 'New Api has been created');
             return $this->redirect($this->generateUrl('index'));
         }
 
         return $this->render('CocomodeSampleApiDocumentorBundle:Default:create.html.twig', array(
             'activeNav' => 'create',
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function createTempAction(Request $request)
+    {
+        $api = new Api();
+        $form = $this->createFormBuilder($api, array(
+            'validation_groups' => array('create_temp'),
+        ))
+            ->add('statusCode', 'choice', array(
+                'choices' => $this->getStatusCodeList(),
+                'required' => true,
+            ))
+            ->add('contentType', 'choice', array(
+                'choices' => $this->getContentTypeList(),
+                'required' => true,
+            ))
+            ->add('response', 'textarea')
+            ->add('Create Temp Api', 'submit')
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $session = $request->getSession();
+
+            $route = '';
+            do {
+                $oauth = new \OAuthProvider(array("oauth_signature_method" => OAUTH_SIG_METHOD_HMACSHA1));
+                $token = $oauth->generateToken(10);
+                $route = bin2hex($token);
+
+                $currentApi = $this->findApi($route);
+            } while (!empty($currentApi));
+            $api->setRoute($route);
+
+            if ($api->getContentType() === 'application/json') {
+                $jsonDecode = json_decode($api->getResponse());
+                if (empty($jsonDecode)) {
+                    $session->getFlashBag()->add('alert-danger', 'Response field was not a valid json');
+                    return $this->render('CocomodeSampleApiDocumentorBundle:Default:createTemp.html.twig', array(
+                        'activeNav' => 'create_temp',
+                        'form' => $form->createView(),
+                    ));
+                }
+                $api->setResponse(json_encode($jsonDecode));
+            }
+
+            $api->setCreatedAt(new \DateTime());
+            $api->setUpdatedAt(new \DateTime());
+            $api->setExpireDate(new \DateTime('+24 hours'));
+            $api->setType(2);
+            $api->setDeleteFlag(0);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($api);
+            $em->flush();
+
+            $session->getFlashBag()->add('alert-success', 'New Api has been created');
+            return $this->redirect($this->generateUrl('index'));
+        }
+
+        return $this->render('CocomodeSampleApiDocumentorBundle:Default:createTemp.html.twig', array(
+            'activeNav' => 'create_temp',
             'form' => $form->createView(),
         ));
     }
@@ -172,6 +237,8 @@ class DefaultController extends Controller
     public function apiAction($route1, $route2=null, $route3=null, $route4=null, $route5=null, $route6=null)
     {
         $api = $this->findApi($route1, $route2, $route3, $route4, $route5, $route6);
+
+        if (empty($api)) return new Response(null,Response::HTTP_NOT_FOUND);
 
         $statusCode = $api->getStatusCode();
 

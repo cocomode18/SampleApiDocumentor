@@ -68,9 +68,9 @@ class Api
     private $route6;
 
     /**
-     * @var boolean
+     * @var integer
      *
-     * @ORM\Column(name="type", type="boolean", nullable=false)
+     * @ORM\Column(name="type", type="integer", nullable=false)
      */
     private $type;
 
@@ -78,6 +78,10 @@ class Api
      * @var string
      *
      * @ORM\Column(name="status_code", type="string", length=50, nullable=false)
+     * @Assert\NotBlank(
+     *   message = "StatusCode field is empty",
+     *   groups = {"create_api", "edit_api", "create_temp"}
+     * )
      */
     private $statusCode;
 
@@ -87,7 +91,7 @@ class Api
      * @ORM\Column(name="content_type", type="string", length=50, nullable=false)
      * @Assert\NotBlank(
      *   message = "ContentType field is empty",
-     *   groups = {"create_api", "edit_api"}
+     *   groups = {"create_api", "edit_api", "create_temp"}
      * )
      */
     private $contentType;
@@ -98,7 +102,7 @@ class Api
      * @ORM\Column(name="response", type="text", nullable=false)
      * @Assert\NotBlank(
      *   message = "Response field is empty",
-     *   groups = {"create_api", "edit_api"}
+     *   groups = {"create_api", "edit_api", "create_temp"}
      * )
      */
     private $response;
@@ -299,7 +303,7 @@ class Api
     /**
      * Set type
      *
-     * @param boolean $type
+     * @param integer $type
      * @return Api
      */
     public function setType($type)
@@ -312,7 +316,7 @@ class Api
     /**
      * Get type
      *
-     * @return boolean
+     * @return integer
      */
     public function getType()
     {

@@ -10,6 +10,10 @@ create:
     path:   /create
     defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:create }
 
+create_temp:
+    path:   /createTemp
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:createTemp }
+
 edit:
     path:   /edit/{apiId}
     defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:edit }

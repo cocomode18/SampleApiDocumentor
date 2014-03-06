@@ -35,12 +35,18 @@
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                {% if activeNav == 'create' %}
-                <li><a href="{{ asset(path('index')) }}">Home</a></li>
-                <li class="active"><a href="{{ asset(path('create')) }}">Create</a></li>
-                {% else %}
+                {% if activeNav == 'home' %}
                 <li class="active"><a href="{{ asset(path('index')) }}">Home</a></li>
                 <li><a href="{{ asset(path('create')) }}">Create</a></li>
+                <li><a href="{{ asset(path('create_temp')) }}">Create Temp</a></li>
+                {% elseif activeNav == 'create' %}
+                <li><a href="{{ asset(path('index')) }}">Home</a></li>
+                <li class="active"><a href="{{ asset(path('create')) }}">Create</a></li>
+                <li><a href="{{ asset(path('create_temp')) }}">Create Temp</a></li>
+                {% elseif activeNav == 'create_temp' %}
+                <li><a href="{{ asset(path('index')) }}">Home</a></li>
+                <li><a href="{{ asset(path('create')) }}">Create</a></li>
+                <li class="active"><a href="{{ asset(path('create_temp')) }}">Create Temp</a></li>
                 {% endif %}
             </ul>
         </div>
