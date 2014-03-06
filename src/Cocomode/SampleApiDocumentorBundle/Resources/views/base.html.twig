@@ -48,7 +48,24 @@
 </nav>
 
 <div class="container">
-{% block Content %}{% endblock Content %}
+
+    {% for message in app.session.flashbag.get('alert-success') %}
+    <div class="row">
+        <div class="col-md-12 bg-success">
+            <h4><span class="glyphicon glyphicon-ok"></span> {{ message | raw }}</h4>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% for message in app.session.flashbag.get('alert-danger') %}
+    <div class="row">
+        <div class="col-md-12 bg-danger">
+            <h4><span class="glyphicon glyphicon-flash"></span> {{ message | raw }}</h4>
+        </div>
+    </div>
+    {% endfor %}
+
+    {% block Content %}{% endblock Content %}
 </div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

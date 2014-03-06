@@ -20,8 +20,8 @@ delete:
 
 detail:
     path:   /detail/{route1}/{route2}/{route3}/{route4}/{route5}/{route6}
-    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:detail }
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:detail, 'route2':null, 'route3':null, 'route4':null, 'route5':null, 'route6':null}
 
 api:
     path:   /api/{route1}/{route2}/{route3}/{route4}/{route5}/{route6}
-    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:api }
+    defaults:   { _controller: CocomodeSampleApiDocumentorBundle:Default:api, 'route2':null, 'route3':null, 'route4':null, 'route5':null, 'route6':null}
