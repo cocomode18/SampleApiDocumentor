@@ -125,6 +125,13 @@ class Api
     private $expireDate;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="delete_flag", type="integer", nullable=false)
+     */
+    private $deleteFlag;
+
+    /**
      * @var string
      *
      * @Assert\NotBlank(
@@ -448,6 +455,29 @@ class Api
     public function getExpireDate()
     {
         return $this->expireDate;
+    }
+
+    /**
+     * Set deleteFlag
+     *
+     * @param integer $deleteFlag
+     * @return Api
+     */
+    public function setDeleteFlag($deleteFlag)
+    {
+        $this->deleteFlag = $deleteFlag;
+
+        return $this;
+    }
+
+    /**
+     * Get deleteFlag
+     *
+     * @return integer
+     */
+    public function getDeleteFlag()
+    {
+        return $this->deleteFlag;
     }
 
     public function setRoute($route)

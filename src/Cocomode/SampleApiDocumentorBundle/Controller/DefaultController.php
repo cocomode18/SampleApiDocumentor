@@ -69,6 +69,7 @@ class DefaultController extends Controller
             $api->setCreatedAt(new \DateTime());
             $api->setUpdatedAt(new \DateTime());
             $api->setType(1);
+            $api->setDeleteFlag(0);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($api);
@@ -144,8 +145,24 @@ class DefaultController extends Controller
         ));
     }
 
-    public function deleteAction($apiId)
+    public function deleteAction(Request $request, $apiId)
     {
+        $api = $this->getDoctrine()
+            ->getRepository('CocomodeSampleApiDocumentorBundle:Api')
+            ->findOneById($apiId);
+
+        $session = $request->getSession();
+
+        if (empty($api)) {
+            $session->getFlashBag()->add('alert-warning', 'No Api was found');
+            return $this->redirect($this->generateUrl('index'));
+        }
+
+        $api->setDeleteFlag(1);
+        $this->getDoctrine()->getManager()->flush();
+
+        $session->getFlashBag()->add('alert-success', 'Deleted Api "'.$api->getRoute().'"');
+        return $this->redirect($this->generateUrl('index'));
     }
 
     public function detailAction($route1, $route2=null, $route3=null, $route4=null, $route5=null, $route6=null)
@@ -178,6 +195,7 @@ class DefaultController extends Controller
                 'route4' => $route4,
                 'route5' => $route5,
                 'route6' => $route6,
+                'deleteFlag' => 0,
             ));
         return $api;
     }
