@@ -42,6 +42,8 @@ class DefaultController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $session = $request->getSession();
+
             $currentApi = $this->findApi(
                 $api->getRoute1(), $api->getRoute2(), $api->getRoute3(),
                 $api->getRoute4(), $api->getRoute5(), $api->getRoute6()
@@ -49,12 +51,23 @@ class DefaultController extends Controller
 
             if ($currentApi) {
                 $apiEditPage = $this->generateUrl('edit', array('apiId' => $currentApi->getId()));
-                $session = $request->getSession();
                 $session->getFlashBag()->add('alert-danger', 'Api url "'.$api->getRoute().'" already exists. Choose another or <a href="'.$apiEditPage.'">edit</a> the api');
                 return $this->render('CocomodeSampleApiDocumentorBundle:Default:create.html.twig', array(
                     'activeNav' => 'create',
                     'form' => $form->createView(),
                 ));
+            }
+
+            if ($api->getContentType() === 'application/json') {
+                $jsonDecode = json_decode($api->getResponse());
+                if (empty($jsonDecode)) {
+                    $session->getFlashBag()->add('alert-danger', 'Not a Valid Json Response');
+                    return $this->render('CocomodeSampleApiDocumentorBundle:Default:create.html.twig', array(
+                        'activeNav' => 'create',
+                        'form' => $form->createView(),
+                    ));
+                }
+                $api->setResponse(json_encode($jsonDecode));
             }
 
             $api->setCreatedAt(new \DateTime());
@@ -65,7 +78,6 @@ class DefaultController extends Controller
             $em->persist($api);
             $em->flush();
 
-            $session = $request->getSession();
             $session->getFlashBag()->add('alert-success', 'New Api has been created :)');
             return $this->redirect($this->generateUrl('index'));
         }

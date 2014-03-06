@@ -122,6 +122,7 @@ class Api
      * @var string
      *
      * @Assert\NotBlank()
+     * @Assert\Regex("/^[a-zA-Z0-9\/_-]+$/")
      */
     private $route;
 
