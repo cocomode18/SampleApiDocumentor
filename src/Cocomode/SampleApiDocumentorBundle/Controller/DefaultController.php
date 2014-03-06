@@ -19,20 +19,16 @@ class DefaultController extends Controller
     public function createAction(Request $request)
     {
         $api = new Api();
-        $form = $this->createFormBuilder($api)
+        $form = $this->createFormBuilder($api, array(
+            'validation_groups' => array('create_api'),
+        ))
             ->add('route', 'text')
             ->add('statusCode', 'choice', array(
-                'choices' => $this->getStatusCodes(),
+                'choices' => $this->getStatusCodeList(),
                 'required' => true,
             ))
             ->add('contentType', 'choice', array(
-                'choices' => array(
-                    'application/json' => 'json (application/json)',
-                    'text/html' => 'html (text/html)',
-                    'text/plain' => 'plain text (text/plain)',
-                    'text/csv' => 'csv (text/csv)',
-                    'application/xml' => 'xml (application/xml)',
-                ),
+                'choices' => $this->getContentTypeList(),
                 'required' => true,
             ))
             ->add('response', 'textarea')
@@ -61,7 +57,7 @@ class DefaultController extends Controller
             if ($api->getContentType() === 'application/json') {
                 $jsonDecode = json_decode($api->getResponse());
                 if (empty($jsonDecode)) {
-                    $session->getFlashBag()->add('alert-danger', 'Not a Valid Json Response');
+                    $session->getFlashBag()->add('alert-danger', 'Response field was not a valid json');
                     return $this->render('CocomodeSampleApiDocumentorBundle:Default:create.html.twig', array(
                         'activeNav' => 'create',
                         'form' => $form->createView(),
@@ -88,8 +84,64 @@ class DefaultController extends Controller
         ));
     }
 
-    public function editAction($apiId)
+    public function editAction(Request $request, $apiId)
     {
+        $api = $this->getDoctrine()
+            ->getRepository('CocomodeSampleApiDocumentorBundle:Api')
+            ->findOneById($apiId);
+
+        if (empty($api)) {
+            $session = $request->getSession();
+            $session->getFlashBag()->add('alert-warning', 'No Api was found');
+            return $this->redirect($this->generateUrl('index'));
+        }
+
+        $api->setResponse($this->unicodeEncode($api->getResponse()));
+
+        $form = $this->createFormBuilder($api, array(
+            'validation_groups' => array('edit_api'),
+        ))
+            ->add('statusCode', 'choice', array(
+                'choices' => $this->getStatusCodeList(),
+                'required' => true,
+            ))
+            ->add('contentType', 'choice', array(
+                'choices' => $this->getContentTypeList(),
+                'required' => true,
+            ))
+            ->add('response', 'textarea')
+            ->add('Save', 'submit')
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            if ($api->getContentType() === 'application/json') {
+                $jsonDecode = json_decode($api->getResponse());
+                if (empty($jsonDecode)) {
+                    $session->getFlashBag()->add('alert-danger', 'Response field was not a valid json');
+                    return $this->render('CocomodeSampleApiDocumentorBundle:Default:create.html.twig', array(
+                        'activeNav' => 'create',
+                        'form' => $form->createView(),
+                    ));
+                }
+                $api->setResponse(json_encode($jsonDecode));
+            }
+
+            $api->setUpdatedAt(new \DateTime());
+
+            $em = $this->getDoctrine()->getManager();
+            $em->flush();
+
+            $session = $request->getSession();
+            $session->getFlashBag()->add('alert-success', 'Edited Api "'.$api->getRoute().'"');
+            return $this->redirect($this->generateUrl('index'));
+        }
+
+        return $this->render('CocomodeSampleApiDocumentorBundle:Default:edit.html.twig', array(
+            'activeNav' => 'home',
+            'form' => $form->createView(),
+        ));
     }
 
     public function deleteAction($apiId)
@@ -130,7 +182,7 @@ class DefaultController extends Controller
         return $api;
     }
 
-    private function getStatusCodes()
+    private function getStatusCodeList()
     {
         return array(
             'HTTP_OK' => '200 OK',
@@ -155,5 +207,23 @@ class DefaultController extends Controller
             'HTTP_GATEWAY_TIMEOUT' => '504 Gateway Timeout',
             'HTTP_VERSION_NOT_SUPPORTED' => '505 HTTPVersion Not Supported',
         );
+    }
+
+    private function getContentTypeList()
+    {
+        return array(
+            'application/json' => 'json (application/json)',
+            'text/html' => 'html (text/html)',
+            'text/plain' => 'plain text (text/plain)',
+            'text/csv' => 'csv (text/csv)',
+            'application/xml' => 'xml (application/xml)',
+        );
+    }
+
+    private function unicodeEncode($str)
+    {
+        return preg_replace_callback("/\\\\u([0-9a-zA-Z]{4})/", function ($matches) {
+            return mb_convert_encoding(pack("H*", $matches[1]), "UTF-8", "UTF-16");
+        }, $str);
     }
 }

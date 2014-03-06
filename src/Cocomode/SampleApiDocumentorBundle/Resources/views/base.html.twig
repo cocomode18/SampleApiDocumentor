@@ -65,6 +65,14 @@
     </div>
     {% endfor %}
 
+    {% for message in app.session.flashbag.get('alert-warning') %}
+    <div class="row">
+        <div class="col-md-12 bg-warning">
+            <h4><span class="glyphicon glyphicon-bullhorn"></span> {{ message | raw }}</h4>
+        </div>
+    </div>
+    {% endfor %}
+
     {% block Content %}{% endblock Content %}
 </div>
 

@@ -85,7 +85,10 @@ class Api
      * @var string
      *
      * @ORM\Column(name="content_type", type="string", length=50, nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *   message = "ContentType field is empty",
+     *   groups = {"create_api", "edit_api"}
+     * )
      */
     private $contentType;
 
@@ -93,7 +96,10 @@ class Api
      * @var string
      *
      * @ORM\Column(name="response", type="text", nullable=false)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *   message = "Response field is empty",
+     *   groups = {"create_api", "edit_api"}
+     * )
      */
     private $response;
 
@@ -121,8 +127,15 @@ class Api
     /**
      * @var string
      *
-     * @Assert\NotBlank()
-     * @Assert\Regex("/^[a-zA-Z0-9\/_-]+$/")
+     * @Assert\NotBlank(
+     *   message = "Api url field is empty",
+     *   groups = {"create_api"}
+     * )
+     * @Assert\Regex(
+     *   pattern = "/^[a-zA-Z0-9\/_-]+$/",
+     *   message = "Api url can only contain alphabets and numbers",
+     *   groups = {"create_api"}
+     * )
      */
     private $route;
 
