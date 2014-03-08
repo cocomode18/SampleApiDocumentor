@@ -214,8 +214,8 @@ class DefaultController extends Controller
                 $jsonDecode = json_decode($api->getResponse());
                 if (empty($jsonDecode)) {
                     $session->getFlashBag()->add('alert-danger', 'Response field was not a valid json');
-                    return $this->render('CocomodeSampleApiDocumentorBundle:Default:create.html.twig', array(
-                        'activeNav' => 'create',
+                    return $this->render('CocomodeSampleApiDocumentorBundle:Default:edit.html.twig', array(
+                        'activeNav' => 'home',
                         'form' => $form->createView(),
                     ));
                 }
@@ -229,7 +229,14 @@ class DefaultController extends Controller
 
             $session = $request->getSession();
             $session->getFlashBag()->add('alert-success', 'Edited Api "'.$api->getRoute().'"');
-            return $this->redirect($this->generateUrl('index'));
+            return $this->redirect($this->generateUrl('detail', array(
+                'route1' => $api->getRoute1(),
+                'route2' => $api->getRoute2(),
+                'route3' => $api->getRoute3(),
+                'route4' => $api->getRoute4(),
+                'route5' => $api->getRoute5(),
+                'route6' => $api->getRoute6(),
+            )));
         }
 
         return $this->render('CocomodeSampleApiDocumentorBundle:Default:edit.html.twig', array(
