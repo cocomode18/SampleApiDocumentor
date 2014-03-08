@@ -1,0 +1,27 @@
+#########ORIGINAL##########
+#user add
+
+##########GLOBAL###########
+# Global Symfony
+#these files need to be copied when installing application
+/web/bundles/
+/app/bootstrap.php.cache
+/app/cache/*
+/app/config/parameters.yml
+/app/logs/*
+!app/cache/.gitkeep
+!app/logs/.gitkeep
+/build/
+/vendor/
+/bin/
+/composer.phar
+
+# Global
+*.swp
+*.swo
+*.swn
+tags
+
+# Global/OSX.gitignore
+.DS_Store
+

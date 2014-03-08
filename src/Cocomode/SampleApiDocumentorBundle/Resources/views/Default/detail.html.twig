@@ -1,0 +1,25 @@
+{% extends 'CocomodeSampleApiDocumentorBundle::base.html.twig' %}
+{% block Content %}
+<h1>Api detail</h1>
+<h3>{{ Api.route }}</h3>
+<h4><a href="{{ path('edit', {"apiId": Api.id }) }}">edit</a> | <a href="{{ path('delete', {"apiId": Api.id }) }}">delete</a></h4>
+<br />
+<ul>
+    <li>
+<h4>Api Url</h4>
+<p><a href="{{ url('index') }}{{ Api.route }}">{{ url('index') }}{{ Api.route }}</a></p>
+</li>
+<li>
+<h4>Status Code</h4>
+<p>{{ Api.statusCode }}</p>
+    </li>
+<li>
+<h4>Content Type</h4>
+<p>{{ Api.contentType }}</p>
+    </li>
+<li>
+<h4>Response</h4>
+<p>{{ Api.response }}</p>
+    </li>
+</ul>
+{% endblock Content %}

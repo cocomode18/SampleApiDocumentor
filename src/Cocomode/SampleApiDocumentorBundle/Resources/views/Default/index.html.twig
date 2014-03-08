@@ -1,0 +1,25 @@
+{% extends 'CocomodeSampleApiDocumentorBundle::base.html.twig' %}
+{% block Content %}
+<h1>Api List</h1>
+<ul>
+    {% for Api in Apis %}
+    {% if Api.createdAt == Api.updatedAt %}
+    <li><a href="{{ path('detail', {'route1': Api.route1, 'route2': Api.route2, 'route3': Api.route3, 'route4': Api.route4, 'route5': Api.route5, 'route6': Api.route6 }) }}">
+        {{ Api.route }}</a> (created {{ Api.createdAt | date("Y/m/d H:i:s") }})
+    </li>
+    {% else %}
+    <li><a href="{{ path('detail', {'route1': Api.route1, 'route2': Api.route2, 'route3': Api.route3, 'route4': Api.route4, 'route5': Api.route5, 'route6': Api.route6 }) }}">
+        {{ Api.route }}</a> (updated {{ Api.updatedAt | date("Y/m/d H:i:s") }})
+    </li>
+    {% endif %}
+    {% endfor %}
+</ul>
+<h3>Temp Api</h3>
+<ul>
+    {% for TempApi in TempApis %}
+    <li><a href="{{ path('detail', {'route1': TempApi.route1}) }}">
+        {{ TempApi.route }}</a> (expires {{ TempApi.expireDate | date("Y/m/d H:i:s") }})
+    </li>
+    {% endfor %}
+</ul>
+{% endblock Content %}
