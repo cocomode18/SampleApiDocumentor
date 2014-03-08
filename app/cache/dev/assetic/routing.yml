@@ -1,0 +1,5 @@
+_assetic:
+    resource: .
+    type: assetic
+_app:
+    resource: /home/kyo/public_html/hack/sampleApiDocumentor/app/config/routing_dev.yml
