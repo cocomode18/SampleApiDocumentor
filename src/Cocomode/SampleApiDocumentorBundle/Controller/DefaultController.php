@@ -11,8 +11,36 @@ class DefaultController extends Controller
 {
     public function indexAction()
     {
+        $apis = $this->getDoctrine()
+            ->getRepository('CocomodeSampleApiDocumentorBundle:Api')
+            ->findBy(
+                array(
+                    'type' => 1,
+                    'deleteFlag' => 0,
+                ),
+                array(
+                    'route1' => 'ASC',
+                )
+            );
+
+        $tempApis = $this->getDoctrine()
+            ->getRepository('CocomodeSampleApiDocumentorBundle:Api')
+            ->createQueryBuilder('a')
+            ->where('a.type = :type')
+            ->andWhere('a.deleteFlag = :deleteFlag')
+            ->andWhere('a.expireDate > :expireDate')
+            ->setParameters(array(
+                'type' => 2,
+                'deleteFlag' => 0,
+                'expireDate' => new \DateTime(),
+            ))
+            ->getQuery()
+            ->getResult();
+
         return $this->render('CocomodeSampleApiDocumentorBundle:Default:index.html.twig', array(
             'activeNav' => 'home',
+            'Apis' => $apis,
+            'TempApis' => $tempApis,
         ));
     }
 
@@ -230,8 +258,20 @@ class DefaultController extends Controller
         return $this->redirect($this->generateUrl('index'));
     }
 
-    public function detailAction($route1, $route2=null, $route3=null, $route4=null, $route5=null, $route6=null)
+    public function detailAction(Request $request, $route1, $route2=null, $route3=null, $route4=null, $route5=null, $route6=null)
     {
+        $api = $this->findApi($route1, $route2, $route3, $route4, $route5, $route6);
+
+        if (empty($api)) {
+            $session = $request->getSession();
+            $session->getFlashBag()->add('alert-warning', 'No Api was found');
+            return $this->redirect($this->generateUrl('index'));
+        }
+
+        return $this->render('CocomodeSampleApiDocumentorBundle:Default:detail.html.twig', array(
+            'activeNav' => 'home',
+            'Api' => $api,
+        ));
     }
 
     public function apiAction($route1, $route2=null, $route3=null, $route4=null, $route5=null, $route6=null)
